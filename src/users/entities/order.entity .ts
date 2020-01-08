@@ -6,10 +6,10 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/users.entity';
-import { Movie } from './movies.entity';
+import { Movie } from '../../movies/entities/movies.entity';
 
 @Entity()
-export class Rent {
+export class Order {
   @PrimaryGeneratedColumn()
   rentId: number;
   @Column()
@@ -17,20 +17,16 @@ export class Rent {
   @Column()
   movieId: number;
   @CreateDateColumn({ default: new Date() })
-  rentDate: Date;
-  @Column('date')
-  devolutionDate: Date;
-  @Column()
-  devolution: boolean;
+  boughtDate: Date;
   @ManyToOne(
     type => User,
-    user => user.rents,
+    user => user.orders,
   )
   public user!: User;
 
   @ManyToOne(
     type => Movie,
-    movie => movie.rents,
+    movie => movie.orders,
   )
   public movie!: Movie;
 }

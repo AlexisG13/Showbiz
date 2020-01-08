@@ -15,7 +15,7 @@ export class UsersRepository extends Repository<User> {
     }
     const salt = await genSalt();
     const hashedPassword = await hash(password, salt);
-    const user = { username, email, password: hashedPassword, salt};
+    const user = { username, email, password: hashedPassword, salt };
     this.save(user);
   }
 

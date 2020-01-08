@@ -13,8 +13,8 @@ import { hash } from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Role } from './role.entity';
 import { JWT } from './jwt.entity';
-import { Rent } from 'src/movies/entities/rent.entity';
-import { Buy } from 'src/movies/entities/rent.entity copy';
+import { Rent } from 'src/users/entities/rent.entity';
+import { Order } from 'src/users/entities/order.entity ';
 
 @Entity()
 @Unique(['username'])
@@ -53,10 +53,10 @@ export class User extends BaseEntity {
   rents: Rent[];
 
   @OneToMany(
-    type => Buy,
-    buy => buy.movie,
+    type => Order,
+    order => order.movie,
   )
-  buys: Rent[];
+  orders: Rent[];
 
   async validatePassword(password: string): Promise<boolean> {
     const validate = await hash(password, this.salt);

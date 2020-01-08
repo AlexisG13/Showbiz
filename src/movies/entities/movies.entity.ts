@@ -1,10 +1,18 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { Rent } from './rent.entity';
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Rent } from '../../users/entities/rent.entity';
 import { Tag } from '../../tags/entities/tags.entity';
-import { Buy } from './rent.entity copy';
+import { Order } from '../../users/entities/order.entity ';
 
 @Entity()
-export class Movie extends BaseEntity {
+export class Movie {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
@@ -19,7 +27,7 @@ export class Movie extends BaseEntity {
   trailer: string;
   @Column()
   salePrice: number;
-  @Column()
+  @Column({ default: 0 })
   likes: number;
   @Column()
   availability: boolean;
@@ -29,11 +37,15 @@ export class Movie extends BaseEntity {
   )
   rents: Rent[];
   @OneToMany(
-    type => Buy,
-    buy => buy.movie,
+    type => Order,
+    order => order.movie,
   )
-  buys: Rent[];
-  @ManyToMany(type => Tag, category => tag.movies)
+  orders: Rent[];
+  @ManyToMany(
+    type => Tag,
+    tag => tag.movies,
+    { eager: true },
+  )
   @JoinTable()
   tags: Tag[];
 }

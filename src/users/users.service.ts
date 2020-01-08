@@ -1,40 +1,56 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersRepository } from 'src/users/repositories/user.repository';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialsDto } from './dto/auth.credentials.dto';
-import { User } from 'src/users/entities/users.entity';
-import { AccessToken } from './dto/access-token.dto';
-import { PasswordChangeDto } from './dto/password-change.dto';
+import { Order } from './entities/order.entity ';
+import { Repository, Not } from 'typeorm';
+import { MoviesRepository } from 'src/movies/repositories/movies.repository';
+import { Rent } from './entities/rent.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly jwtService: JwtService,
-    @InjectRepository(UsersRepository)
-    private readonly usersRepository: UsersRepository,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(MoviesRepository)
+    private readonly movieRepository: MoviesRepository,
+    @InjectRepository(Rent)
+    private readonly rentRepository: Repository<Rent>,
   ) {}
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    return this.usersRepository.signUp(authCredentialsDto);
-  }
-
-  async login(authCredentialsDto: AuthCredentialsDto): Promise<AccessToken> {
-    const user = await this.usersRepository.validatePassword(
-      authCredentialsDto,
-    );
-    if (!user) {
-      throw new UnauthorizedException('Wrong username or password');
+  async buyMovie(userId: number, movieId: number): Promise<Order> {
+    const movie = await this.movieRepository.findOne({ id: movieId });
+    if (!movie) {
+      throw new NotFoundException('The movie does not exist');
     }
-    const payload = { username: user.username };
-    const accessToken = this.jwtService.sign(payload);
-    return { token: accessToken };
+    if (!movie.stock || !movie.availability) {
+      throw new ConflictException('The movie is out of stock or unavailable');
+    }
+    movie.stock -= 1;
+    await this.movieRepository.save(movie);
+    return this.orderRepository.save({ userId, movieId, boughtDate: new Date() });
   }
 
-  async changePassword(
-    user: User,
-    passwordDto: PasswordChangeDto,
-  ): Promise<void> {
-    return this.usersRepository.changePassword(user, passwordDto);
+  async rentMovie(userId: number, movieId: number): Promise<Rent> {
+    const movie = await this.movieRepository.findOne({ id: movieId });
+    if (!movie) {
+      throw new NotFoundException('The movie does not exist');
+    }
+    if (!movie.stock || !movie.availability) {
+      throw new ConflictException('The movie is out of stock or unavailable');
+    }
+    movie.stock -= 1;
+    await this.movieRepository.save(movie);
+    return this.rentRepository.save({ userId, movieId, rentDate: new Date() });
+  }
+
+  async returnMovie(userId: number, movieId: number): Promise<void> {
+    const rent = await this.rentRepository.findOne({ userId, movieId });
+    if (!rent) {
+      throw new NotFoundException('The user has not rented this movie');
+    }
+    rent.devolution = true;
+    await this.rentRepository.save(rent);
+    const movie = await this.movieRepository.findOne({ id: movieId });
+    movie.stock += 1;
+    await this.movieRepository.save(movie);
   }
 }
