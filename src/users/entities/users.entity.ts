@@ -13,8 +13,10 @@ import { hash } from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Role } from './role.entity';
 import { JWT } from './jwt.entity';
-import { Rent } from 'src/users/entities/rent.entity';
-import { Order } from 'src/users/entities/order.entity ';
+import { Rent } from './rent.entity';
+import { Order } from './order.entity ';
+
+
 
 @Entity()
 @Unique(['username'])

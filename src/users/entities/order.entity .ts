@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { User } from 'src/users/entities/users.entity';
+
 import { Movie } from '../../movies/entities/movies.entity';
+import { User } from './users.entity';
 
 @Entity()
 export class Order {

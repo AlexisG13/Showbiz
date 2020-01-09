@@ -8,8 +8,8 @@ import { Movie } from './entities/movies.entity';
 import { MovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { MoviesRepository } from './repositories/movies.repository';
-import { TagsRepository } from 'src/tags/repositories/tags.repository';
 import { UpdateMovieQueryDto } from './dto/update-movie-query.dto';
+import { TagsRepository } from '../tags/repositories/tags.repository';
 
 @Injectable()
 export class MoviesService {
