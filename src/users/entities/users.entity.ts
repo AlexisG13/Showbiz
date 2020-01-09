@@ -38,6 +38,7 @@ export class User extends BaseEntity {
   @ManyToOne(
     type => Role,
     role => role.users,
+    { eager: true },
   )
   role: Role;
   @OneToMany(

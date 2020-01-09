@@ -7,8 +7,6 @@ export class JWT extends BaseEntity {
   id: number;
   @Column()
   jwt: string;
-  @Column()
-  expiration: Date;
   @ManyToOne(
     type => User,
     user => user.jwts,

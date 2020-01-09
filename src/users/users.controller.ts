@@ -9,6 +9,7 @@ import {
   Param,
   UnauthorizedException,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth.credentials.dto';
 import { UsersService } from './users.service';
@@ -22,6 +23,8 @@ import { Order } from './entities/order.entity ';
 import { InsertResult } from 'typeorm';
 import { Rent } from './entities/rent.entity';
 import { RentMovieDto } from './dto/rent-movie.dto';
+import { LoginCredentialsDto } from 'src/auth/dto/login-credentials.dto';
+import { GetToken } from 'src/auth/decorators/get-token.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -38,8 +41,14 @@ export class UsersController {
 
   @Post('/signin')
   @UsePipes(ValidationPipe)
-  signIn(@Body() authcredentialsDTo: AuthCredentialsDto): Promise<AccessToken> {
-    return this.authService.login(authcredentialsDTo);
+  signIn(@Body() loginCredentials: LoginCredentialsDto): Promise<AccessToken> {
+    return this.authService.login(loginCredentials);
+  }
+
+  @Delete('/logout')
+  @UseGuards(AuthGuard('jwt'))
+  logout(@GetToken() token: string): Promise<void> {
+    return this.authService.logout(token);
   }
 
   @Patch('/:userId/password')

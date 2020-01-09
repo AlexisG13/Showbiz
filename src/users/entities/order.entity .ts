@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { User } from 'src/users/entities/users.entity';
 import { Movie } from '../../movies/entities/movies.entity';
 
@@ -18,6 +12,10 @@ export class Order {
   movieId: number;
   @CreateDateColumn({ default: new Date() })
   boughtDate: Date;
+  @Column()
+  Total: number;
+  @Column()
+  Quantity: number;
   @ManyToOne(
     type => User,
     user => user.orders,
