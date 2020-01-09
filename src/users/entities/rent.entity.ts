@@ -16,21 +16,21 @@ export class Rent {
   userId: number;
   @Column()
   movieId: number;
-  @CreateDateColumn({ default: new Date() })
+  @Column({ default: new Date() })
   rentDate: Date;
-  @Column('date')
+  @Column({default : new Date()})
   devolutionDate: Date;
-  @Column()
+  @Column({default: false})
   devolution: boolean;
   @ManyToOne(
     type => User,
     user => user.rents,
   )
-  public user!: User;
+  user!: User;
 
   @ManyToOne(
     type => Movie,
     movie => movie.rents,
   )
-  public movie!: Movie;
+  movie!: Movie;
 }

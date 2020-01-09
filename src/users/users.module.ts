@@ -5,13 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from './repositories/user.repository';
 import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { Repository } from 'typeorm';
 import { Rent } from './entities/rent.entity';
 import { MoviesRepository } from 'src/movies/repositories/movies.repository';
 import { Order } from './entities/order.entity ';
+import { NewRentSuscriber } from './suscribers/new-rent.suscriber';
 
 @Module({
-  providers: [UsersService],
+  providers: [UsersService, NewRentSuscriber],
   controllers: [UsersController],
   imports: [
     TypeOrmModule.forFeature([UsersRepository, Rent, MoviesRepository, Order]),
