@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from 'src/users/repositories/user.repository';
-import { AuthCredentialsDto } from 'src/users/dto/auth.credentials.dto';
+import { AuthCredentialsDto } from 'src/auth/dto/auth.credentials.dto';
 import { AccessToken } from 'src/users/dto/access-token.dto';
 import { PasswordChangeDto } from 'src/users/dto/password-change.dto';
 import { User } from 'src/users/entities/users.entity';
@@ -25,8 +25,8 @@ export class AuthService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const role = await this.roleRepository.findOne({ title: authCredentialsDto.role });
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
+    const role = await this.roleRepository.findOne({ title: 'client' });
     if (!role) {
       throw new NotFoundException('Role does not exist');
     }

@@ -1,7 +1,7 @@
 import { User } from '../entities/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { AuthCredentialsDto } from 'src/users/dto/auth.credentials.dto';
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { AuthCredentialsDto } from 'src/auth/dto/auth.credentials.dto';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
 import { PasswordChangeDto } from '../dto/password-change.dto';
 import { Role } from '../entities/role.entity';
@@ -9,7 +9,7 @@ import { LoginCredentialsDto } from 'src/auth/dto/login-credentials.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
-  async signUp(authCredentialsDto: AuthCredentialsDto, role: Role): Promise<void> {
+  async signUp(authCredentialsDto: AuthCredentialsDto, role: Role): Promise<User> {
     const { username, password, email } = authCredentialsDto;
     const exists = await this.findOne({ username });
     if (exists) {
@@ -18,7 +18,7 @@ export class UsersRepository extends Repository<User> {
     const salt = await genSalt();
     const hashedPassword = await hash(password, salt);
     const user = { username, email, password: hashedPassword, salt, role };
-    this.save(user);
+    return this.save(user);
   }
 
   async validatePassword(loginCredentials: LoginCredentialsDto): Promise<User | null> {

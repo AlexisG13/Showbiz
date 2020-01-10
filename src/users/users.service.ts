@@ -1,16 +1,13 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity ';
-import { Repository, Not, InsertResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MoviesRepository } from 'src/movies/repositories/movies.repository';
 import { Rent } from './entities/rent.entity';
 import { User } from './entities/users.entity';
-import { RentMovieDto } from './dto/rent-movie.dto';
+import { UsersRepository } from './repositories/user.repository';
+import { Role } from './entities/role.entity';
+import { RoleDto } from './dto/role.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,57 +18,43 @@ export class UsersService {
     private readonly movieRepository: MoviesRepository,
     @InjectRepository(Rent)
     private readonly rentRepository: Repository<Rent>,
+    @InjectRepository(UsersRepository)
+    private readonly userRepository: UsersRepository,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async buyMovie(user: User, movieId: number): Promise<Order> {
-    const movie = await this.movieRepository.findOne({ id: movieId });
-    if (!movie) {
-      throw new NotFoundException('The movie does not exist');
+  async changeUserRole(userId: number, roleDto: RoleDto): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) {
+      throw new NotFoundException('The user does not exist');
     }
-    if (!movie.stock) {
-      throw new ConflictException('The movie is out of stock or unavailable');
+    const role = await this.roleRepository.findOne({ title: roleDto.title });
+    if (!role) {
+      throw new NotFoundException('The role does not exist');
     }
-    movie.stock -= 1;
-    await this.movieRepository.save(movie);
-    return this.orderRepository.save({
-      user,
-      movie,
-      boughtDate: new Date(),
-    });
+    user.role = role;
+    return this.userRepository.save(user);
   }
 
-  async rentMovie(user: User, movieId: number, rentDto: RentMovieDto): Promise<Rent> {
-    const movie = await this.movieRepository.findOne({ id: movieId });
-    if (!movie) {
-      throw new NotFoundException('The movie does not exist');
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) {
+      throw new NotFoundException('The user does not exist');
     }
-    if (!movie.stock) {
-      throw new ConflictException('The movie is out of stock or unavailable');
-    }
-    movie.stock -= 1;
-    await this.movieRepository.save(movie);
-    return this.rentRepository.save({
-      user,
-      movie,
-      devolution: false,
-      devolutionDate: rentDto.devolutionDate,
-      rentDate: new Date(),
-    });
+    user.isActive = false;
+    await this.userRepository.save(user);
   }
 
-  async returnMovie(rentId: number): Promise<Rent> {
-    try {
-      const rent = await this.rentRepository.findOne(rentId);
-      if (!rent || rent.devolution === true) {
-        throw new NotFoundException('The rent does not exist');
-      }
-      rent.devolution = true;
-      const movie = await this.movieRepository.findOne(rent.movieId);
-      movie.stock += 1;
-      await this.movieRepository.save(movie);
-      return await this.rentRepository.save(rent);
-    } catch (err) {
-      throw new InternalServerErrorException('An error ocurred when contacting the database');
+  async getUser(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) {
+      throw new NotFoundException('The user does not exist');
     }
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.userRepository.find();
   }
 }

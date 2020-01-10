@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tags.entity';
 import { Repository } from 'typeorm';
 import { TagDto } from './dto/tag.dto';
+import { TagsRepository } from './repositories/tags.repository';
 
 @Injectable()
 export class TagsService {
   constructor(
-    @InjectRepository(Tag)
-    private readonly tagsRepository: Repository<Tag>,
+    @InjectRepository(TagsRepository)
+    private readonly tagsRepository: TagsRepository,
   ) {}
 
   getAllTags(): Promise<Tag[]> {
@@ -44,6 +45,8 @@ export class TagsService {
     if (!tag) {
       throw new NotFoundException('The tag does not exist');
     }
-    this.tagsRepository.delete(tag);
+    tag.isActive = false;
+    this.tagsRepository.save(tag);
+    return;
   }
 }

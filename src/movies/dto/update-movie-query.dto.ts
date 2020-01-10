@@ -1,4 +1,4 @@
-import { IsOptional } from 'class-validator';
+/* istanbul ignore file */
 import { Tag } from 'src/tags/entities/tags.entity';
 import { Movie } from '../entities/movies.entity';
 

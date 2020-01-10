@@ -1,5 +1,5 @@
+/* istanbul ignore file */
 import {
-  BaseEntity,
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -16,11 +16,9 @@ import { JWT } from './jwt.entity';
 import { Rent } from './rent.entity';
 import { Order } from './order.entity ';
 
-
-
 @Entity()
 @Unique(['username'])
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
@@ -37,6 +35,8 @@ export class User extends BaseEntity {
   createdAt?: Date;
   @UpdateDateColumn({ default: new Date() })
   updatedAt?: Date;
+  @Column({ default: true })
+  isActive: boolean;
   @ManyToOne(
     type => Role,
     role => role.users,

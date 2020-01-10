@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {
   BaseEntity,
   Entity,
@@ -6,6 +7,8 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Rent } from '../../users/entities/rent.entity';
 import { Tag } from '../../tags/entities/tags.entity';
@@ -31,6 +34,12 @@ export class Movie {
   likes: number;
   @Column()
   availability: boolean;
+  @Column({ default: true })
+  isActive: boolean;
+  @CreateDateColumn()
+  createDate: Date;
+  @UpdateDateColumn()
+  updateDate: Date;
   @OneToMany(
     type => Rent,
     rent => rent.movie,

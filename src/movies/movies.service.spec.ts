@@ -2,13 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesService } from './movies.service';
 import { TagsRepository } from '../tags/repositories/tags.repository';
 import { MoviesRepository } from './repositories/movies.repository';
-import { Movie } from './entities/movies.entity';
+import { NotFoundException } from '@nestjs/common';
 
 const mockMoviesRepository = () => ({
   find: jest.fn(),
   findOne: jest.fn(),
+  save: jest.fn(),
+  update: jest.fn(),
+  addMovie: jest.fn().mockResolvedValue(mockMovie),
 });
-const mockTagsRepository = () => ({});
+
+const mockTagsRepository = () => ({
+  createQueryBuilder: jest.fn(() => ({
+    where: jest.fn().mockReturnThis(),
+    getMany: jest.fn().mockReturnValueOnce(null),
+  })),
+});
+
 const mockMovie = {
   id: 0,
   title: 'Test title',
@@ -19,6 +29,19 @@ const mockMovie = {
   likes: 0,
   poster: 'test poster',
   trailer: 'test trailer',
+  tags: [],
+};
+
+const mockAddMovie = {
+  title: 'New Test title',
+  description: ' Test description',
+  salePrice: 0,
+  stock: 0,
+  availability: true,
+  likes: 0,
+  poster: 'test poster',
+  trailer: 'test trailer',
+  tags: [],
 };
 
 describe('MoviesService', () => {
@@ -65,6 +88,28 @@ describe('MoviesService', () => {
       expect(moviesRepository.findOne).toHaveBeenCalledWith({
         id: mockMovie.id,
       });
+    });
+
+    it('throws an error when the movie does not exist', async () => {
+      (moviesRepository.findOne as jest.Mock).mockResolvedValue(null);
+      expect(moviesService.getSingleMovie(1)).rejects.toThrowError(NotFoundException);
+    });
+  });
+
+  describe('addMovie', () => {
+    it('add a movie to the repository', async () => {
+      const result = await moviesService.addMovie(mockAddMovie);
+      expect(result).toEqual(mockMovie);
+    });
+  });
+
+  describe('deleteMovie', () => {
+    it('deletes a movie from the repository', async () => {
+      (moviesRepository.findOne as jest.Mock).mockResolvedValue(mockMovie);
+      expect(moviesRepository.findOne).not.toHaveBeenCalled();
+      const result = await moviesService.deleteMovie(0);
+      expect(moviesRepository.findOne).toHaveBeenCalled();
+      expect(result).toBeUndefined();
     });
   });
 });

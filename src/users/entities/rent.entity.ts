@@ -1,8 +1,11 @@
+/* istanbul ignore file */
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { Movie } from '../../movies/entities/movies.entity';
@@ -18,10 +21,16 @@ export class Rent {
   movieId: number;
   @Column({ default: new Date() })
   rentDate: Date;
-  @Column({default : new Date()})
+  @Column()
   devolutionDate: Date;
-  @Column({default: false})
+  @Column({ default: false })
   devolution: boolean;
+  @Column({ default: true })
+  isActive: boolean;
+  @CreateDateColumn()
+  createDate: Date;
+  @UpdateDateColumn()
+  updateDate: Date;
   @ManyToOne(
     type => User,
     user => user.rents,

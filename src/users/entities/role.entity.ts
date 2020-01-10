@@ -1,8 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+/* istanbul ignore file */
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { User } from './users.entity';
 
 @Entity()
-export class Role extends BaseEntity {
+export class Role {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()

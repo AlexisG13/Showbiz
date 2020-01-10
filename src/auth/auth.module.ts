@@ -20,7 +20,7 @@ import { Role } from 'src/users/entities/role.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([UsersRepository, JWT,Role]),
+    TypeOrmModule.forFeature([UsersRepository, JWT, Role]),
   ],
   exports: [JwtStrategy, AuthService],
 })

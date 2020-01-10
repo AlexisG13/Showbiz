@@ -1,4 +1,4 @@
-import { IsDefined, IsEmail, IsString, IsNotEmpty } from 'class-validator';
+import { IsDefined, IsEmail} from 'class-validator';
 
 export class AuthCredentialsDto {
   @IsDefined()
@@ -8,8 +8,4 @@ export class AuthCredentialsDto {
   @IsDefined()
   @IsEmail()
   email: string;
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  role: string;
 }

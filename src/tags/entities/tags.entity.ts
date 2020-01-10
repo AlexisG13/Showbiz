@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+/* istanbul ignore file */
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Movie } from '../../movies/entities/movies.entity';
 
 @Entity()
@@ -7,6 +15,15 @@ export class Tag {
   id: number;
   @Column()
   title: string;
-  @ManyToMany(type => Movie, movie => movie.tags)
+  @Column({ default: true })
+  isActive: boolean;
+  @CreateDateColumn()
+  createDate: Date;
+  @UpdateDateColumn()
+  updateDate: Date;
+  @ManyToMany(
+    type => Movie,
+    movie => movie.tags,
+  )
   movies: Movie[];
 }
