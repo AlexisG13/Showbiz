@@ -89,6 +89,7 @@ export class UsersController {
 
   @Post(':userId/movies/:movieId/rent')
   @UseGuards(AuthGuard('jwt'), SignedGuard)
+  @UsePipes(new ValidationPipe({ forbidUnknownValues: true }))
   rentMovie(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('movieId') movieId: number,
@@ -101,7 +102,7 @@ export class UsersController {
     return this.moviesService.rentMovie(user, movieId, rentDto);
   }
 
-  @Patch(':userId/rentals/rentalId')
+  @Patch(':userId/rentals/:rentalId')
   @UseGuards(AuthGuard('jwt'), SignedGuard)
   returnMovie(
     @Param('rentalId') rentalId: number,
