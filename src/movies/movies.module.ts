@@ -15,7 +15,7 @@ import { Rent } from 'src/users/entities/rent.entity';
   controllers: [MoviesController],
   imports: [
     AuthModule,
-    TypeOrmModule.forFeature([MoviesRepository, TagsRepository, UsersRepository, JWT, Rent, Order]),
+    TypeOrmModule.forFeature([MoviesRepository, TagsRepository, UsersRepository, JWT, Rent, Order]),  
   ],
   exports: [MoviesService],
 })

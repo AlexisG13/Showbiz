@@ -13,7 +13,7 @@ import { MoviesRepository } from './repositories/movies.repository';
 import { UpdateMovieQueryDto } from './dto/update-movie-query.dto';
 import { TagsRepository } from '../tags/repositories/tags.repository';
 import { Rent } from 'src/users/entities/rent.entity';
-import { Repository } from 'typeorm';
+import { Repository, AdvancedConsoleLogger } from 'typeorm';
 import { User } from 'src/users/entities/users.entity';
 import { RentMovieDto } from './dto/rent-movie.dto';
 import { Order } from 'src/users/entities/order.entity ';
@@ -55,10 +55,13 @@ export class MoviesService {
   }
 
   async addMovie(movieDto: MovieDto): Promise<Movie> {
-    const availableTags = await this.tagsRepository
+    let availableTags = await this.tagsRepository
       .createQueryBuilder('tag')
       .where('tag.title IN (:...tags)', { tags: movieDto.tags })
       .getMany();
+    if (!availableTags) {
+      availableTags = [];
+    }
     return this.moviesRepository.addMovie(movieDto, availableTags);
   }
 
