@@ -51,3 +51,5 @@ $ npm run start:dev
 The documentation can be found on the following link: 
 https://documenter.getpostman.com/view/9661494/SWLiY5CV?version=latest
 
+Example admin user : username: alexis13 , password = 1234
+
