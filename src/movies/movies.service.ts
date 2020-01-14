@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  Inject,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +12,7 @@ import { MoviesRepository } from './repositories/movies.repository';
 import { UpdateMovieQueryDto } from './dto/update-movie-query.dto';
 import { TagsRepository } from '../tags/repositories/tags.repository';
 import { Rent } from 'src/users/entities/rent.entity';
-import { Repository } from 'typeorm';
+import { Repository} from 'typeorm';
 import { User } from 'src/users/entities/users.entity';
 import { RentMovieDto } from './dto/rent-movie.dto';
 import { Order } from 'src/users/entities/order.entity ';
