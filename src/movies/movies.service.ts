@@ -54,10 +54,13 @@ export class MoviesService {
   }
 
   async addMovie(movieDto: MovieDto): Promise<Movie> {
-    const availableTags = await this.tagsRepository
+    let availableTags = await this.tagsRepository
       .createQueryBuilder('tag')
       .where('tag.title IN (:...tags)', { tags: movieDto.tags })
       .getMany();
+    if (!availableTags) {
+      availableTags = [];
+    }
     return this.moviesRepository.addMovie(movieDto, availableTags);
   }
 
