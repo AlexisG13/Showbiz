@@ -7,7 +7,7 @@
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
 
-# <center> Mi Chero </center> 
+# <center> Showbiz </center> 
 
 ---
   
@@ -26,7 +26,7 @@ $ npm install
 ### 2- Restore the dump included in the scripts directory
 
 ```bash
-  $psql showbiz < scripts/DB_BACKUP
+  $psql showbiz < scripts/backup
 ```
 ## Enviroment variables
 
